@@ -77,20 +77,8 @@ export default function CategoryManagementPage() {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "id", width: 80 },
+    { title: "STT", key: "stt", width: 80, render: (_: any, __: any, index: number) => index + 1 },
     { title: "Tên danh mục", dataIndex: "name" },
-    {
-      title: "Bảng kích cỡ",
-      dataIndex: "sizeChartUrl",
-      render: (v: string) =>
-        v ? (
-          <a href={v} target="_blank" rel="noreferrer">
-            Xem
-          </a>
-        ) : (
-          "-"
-        ),
-    },
     {
       title: "Kích hoạt",
       dataIndex: "isActive",
