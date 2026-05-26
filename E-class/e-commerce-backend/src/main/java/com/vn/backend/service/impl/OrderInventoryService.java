@@ -152,9 +152,7 @@ public class OrderInventoryService {
             if (availableStock < quantity) {
                 String productName = variant.getProduct() != null ? variant.getProduct().getName() : "";
                 throw new InvalidRequestException(
-                        "Không đủ tồn kho khả dụng. Sản phẩm đang được giữ bởi đơn thanh toán online khác: "
-                        + productName + " - " + variant.getCode()
-                        + ". Khả dụng: " + availableStock + ", cần: " + quantity);
+                        "Không đủ tồn kho khả dụng ");
             }
 
             variant.setStockQuantity(currentStock - quantity);

@@ -6,6 +6,7 @@ import {
   message,
   Tooltip,
   Popconfirm,
+  Modal,
   Tabs,
   Table,
   Spin,
@@ -115,12 +116,42 @@ const OrderManagementPage = () => {
     fetchAllOrders();
   }, []);
 
+  const isStockIssueError = (error: any) => {
+    const msg = String(
+      error?.response?.data?.message || error?.message || "",
+    ).toLowerCase();
+
+    return /tồn kho|hết hàng|không đủ|khong du|not enough|insufficient|out of stock|stock/i.test(
+      msg,
+    );
+  };
+
   const handleUpdateStatus = async (orderId: number, status: string) => {
     try {
       await adminOrderService.updateOrderStatus(orderId, status);
       message.success("Cập nhật trạng thái thành công");
       fetchAllOrders();
     } catch (error: any) {
+      if (isStockIssueError(error)) {
+        Modal.confirm({
+          title: "Không đủ sản phẩm để xác nhận đơn hàng",
+          content: (
+            <div>
+              <p>
+                {error?.response?.data?.message ||
+                  "Số lượng sản phẩm trong kho không đủ để xác nhận đơn."
+                }
+              </p>
+              <p>Vui lòng cập nhật tồn kho sản phẩm trước khi xác nhận lại.</p>
+            </div>
+          ),
+          okText: "Cập nhật tồn kho",
+          cancelText: "Đóng",
+          onOk: () => navigate("/admin/products"),
+        });
+        return;
+      }
+
       message.error(error?.response?.data?.message || "Cập nhật thất bại");
     }
   };
