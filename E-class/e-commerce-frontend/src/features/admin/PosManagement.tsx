@@ -45,7 +45,6 @@ import VoucherSelectorModal, {
 } from "@/components/VoucherSelectorModal";
 import { handleImageError, resolveImageUrl } from "@/utils/utils";
 import { formatKnownVariantAttributes } from "@/utils/productAttributeLabel";
-import { printThermalInvoice } from "@/utils/invoicePrint";
 
 const { Title, Text } = Typography;
 
@@ -747,8 +746,6 @@ const PosManagement = () => {
       note: payload.note,
     };
 
-    let printWindow: Window | null = null;
-
     try {
       if (payload.isVnpay) {
         const vnpay = await posService.createVnpayPayment(
@@ -757,13 +754,6 @@ const PosManagement = () => {
         );
         window.location.href = vnpay.paymentUrl;
         return;
-      }
-
-      printWindow = window.open("", "_blank", "width=420,height=700");
-      if (!printWindow) {
-        message.warning(
-          "Trình duyệt có thể chặn popup in. Hoá đơn sẽ được tạo ngay khi có thể.",
-        );
       }
 
       const data = await posService.checkout(selectedOrderId!, checkoutPayload);
@@ -777,15 +767,8 @@ const PosManagement = () => {
 
       await loadDraftOrders();
       await handleSearchProducts();
-
-      if (printWindow) {
-        await printThermalInvoice(Promise.resolve(data), printWindow);
-      }
     } catch (error: any) {
       message.error(error?.response?.data?.message || "Thanh toán thất bại");
-      if (printWindow && !printWindow.closed) {
-        printWindow.close();
-      }
     }
   };
 

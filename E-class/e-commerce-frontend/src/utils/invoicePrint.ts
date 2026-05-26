@@ -256,10 +256,8 @@ const replaceAllPlaceholders = (
 
 export const printThermalInvoice = async (
   orderDetailOrPromise: InvoiceOrderDetail | Promise<InvoiceOrderDetail>,
-  targetWindow?: Window | null,
 ) => {
-  const printWindow =
-    targetWindow || window.open("", "_blank", "width=420,height=700");
+  const printWindow = window.open("", "_blank", "width=420,height=700");
 
   if (!printWindow) {
     message.error("Trình duyệt đã chặn cửa sổ in. Vui lòng cho phép popup.");
